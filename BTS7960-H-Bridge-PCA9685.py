@@ -5,7 +5,7 @@
 # Version:   0.1 Alpha
 # Homepage:   http://custom-build-robots.com
 
-# !!! Not yet tested !!!
+# Not yet tested !!!
 
 # Dieses Programm wurde fuer die Ansteuerung der linken und rechten
 # Motoren des Roboter-Autos BigRob entwickelt. Es geht dabei davon,
@@ -100,7 +100,7 @@ io.setup(rightmotor_in2_pin, io.OUT)
 
 # !!!!!  ACHTUNG  !!!!!
 # Für die ersten Tests wurden die Ausgaenge auf True gesetzt.
-# Somit ist der Motortreiber kativ sobald ein PWM Signal anliegt.
+# Somit ist der Motortreiber aktiv sobald ein PWM Signal anliegt.
 io.output(leftmotor_in1_pin, True)
 io.output(leftmotor_in2_pin, True)
 io.output(rightmotor_in1_pin, True)
