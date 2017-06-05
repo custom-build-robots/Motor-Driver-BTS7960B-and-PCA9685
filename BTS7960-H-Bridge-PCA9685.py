@@ -5,7 +5,7 @@
 # Version:   0.1 Alpha
 # Homepage:   http://custom-build-robots.com
 
-# Not yet tested !!!
+# !!! Not yet tested !!!
 
 # Dieses Programm wurde fuer die Ansteuerung der linken und rechten
 # Motoren des Roboter-Autos BigRob entwickelt. Es geht dabei davon,
@@ -60,14 +60,14 @@ io.setwarnings(False)
 # --- START KONFIGURATION GPIO Adressen ---
 
 # Linker Motortreiber
-L_L_EN = 22 # leftmotor_in1_pin
-L_R_EN = 23 # leftmotor_in2_pin
+##L_L_EN = 22 # leftmotor_in1_pin
+##L_R_EN = 23 # leftmotor_in2_pin
 ##L_L_PWM = 18 # leftmotorpwm_pin_l
 ##L_R_PWM = 17 # leftmotorpwm_pin_r
 
 # Rechter Motortreiber
-R_L_EN = 13 # rightmotor_in1_pin
-R_R_EN = 19 # rightmotor_in2_pin
+##R_L_EN = 13 # rightmotor_in1_pin
+##R_R_EN = 19 # rightmotor_in2_pin
 ##R_L_PWM = 12 # rightmotorpwm_pin_l
 ##R_R_PWM = 6 # rightmotorpwm_pin_r
 
@@ -76,8 +76,8 @@ R_R_EN = 19 # rightmotor_in2_pin
 
 # Der Variable leftmotor_in1_pin wird die Varibale IN1 zugeorndet. 
 # Der Variable leftmotor_in2_pin wird die Varibale IN2 zugeorndet. 
-leftmotor_in1_pin = L_L_EN
-leftmotor_in2_pin = L_R_EN
+leftmotor_in1_pin = 22
+leftmotor_in2_pin = 23
 # Beide Variablen leftmotor_in1_pin und leftmotor_in2_pin werden als
 # Ausgaenge "OUT" definiert. Mit den beiden Variablen wird die
 # Drehrichtung der Motoren gesteuert.
@@ -86,8 +86,8 @@ io.setup(leftmotor_in2_pin, io.OUT)
 
 # Der Variable rightmotor_in1_pin wird die Varibale IN1 zugeorndet. 
 # Der Variable rightmotor_in2_pin wird die Varibale IN2 zugeorndet. 
-rightmotor_in1_pin = R_L_EN
-rightmotor_in2_pin = R_R_EN
+rightmotor_in1_pin = 13
+rightmotor_in2_pin = 19
 # Beide Variablen rightmotor_in1_pin und rightmotor_in2_pin werden 
 # als Ausgaenge "OUT" definiert. Mit den beiden Variablen wird die
 # Drehrichtung der Motoren gesteuert.
