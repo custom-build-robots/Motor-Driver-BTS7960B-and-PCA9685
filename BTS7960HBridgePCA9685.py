@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 # coding: latin-1
 # Autor:   Ingmar Stapel
-# Datum:   20170605
-# Version:   0.1 Alpha
+# Datum:   20170616
+# Version:   1.0 Alpha
 # Homepage:   http://custom-build-robots.com
 
-# Not yet tested !!!
-
 # Dieses Programm wurde fuer die Ansteuerung der linken und rechten
-# Motoren des Roboter-Autos BigRob entwickelt. Es geht dabei davon,
-# aus dass zwei BTS7960  H-Bruecken als Motortreiber eingesetzt
+# Motoren des Roboter-Autos BigRob entwickelt. Das Programm erwartet,
+# dass zwei BTS7960  H-Bruecken als Motor Treiber eingesetzt
 # werden. Das PWM Signal wird von einem PCA9685 Servo Kontroller
-# erzeugt.
+# erzeugt für die Regelung der Geschwindigkeit der Motoren.
 
-# Dieses Programm muss von einem uebergeordneten Programm  
-# aufgerufen werden, dass die Steuerung des Programmes 
-# BTS7960-H-Bridge-PCA9685.py übernimmt.
+# Dieses Programm muss von einem uebergeordneten Programm z. B.
+# RobotControl.py aufgerufen werden, dass die Steuerung des  
+# Programmes BTS7960HBridgePCA9685.py übernimmt.
 
 # Es wird die Klasse RPi.GPIO importiert, die die Ansteuerung
 # der GPIO Pins des Raspberry Pi ermoeglicht.
@@ -27,8 +25,6 @@ import time
 
 # Importiere die Adafruit PCA9685 Bibliothek
 import Adafruit_PCA9685
-#import PCA9685 as Adafruit_PCA9685
-
 
 # Initialise the PCA9685 using the default address (0x40).
 PCA9685_pwm = Adafruit_PCA9685.PCA9685()
@@ -40,7 +36,9 @@ PCA9685_pwm = Adafruit_PCA9685.PCA9685()
 #MA_pwm = 0  # Min pulse length out of 4096
 #MB_pwm = 0  # Max pulse length out of 4096
 
-# Set frequency to 100hz, good for l298n h-bridge.
+# Eine Frequenz von 100hz, ist gut für die H-Bruecken.
+# Sollen parallel zu dem BTS7960 noch Servo Motoren angesteuert
+# werden, dann muss mit 60Hz gearbeitet werden.
 PCA9685_pwm.set_pwm_freq(60)
 
 # Die Variable duty_cycle gibt die maximale Einschaltdauer der 
@@ -55,22 +53,8 @@ io.setwarnings(False)
 
 # Im folgenden Programmabschnitt wird die logische Verkabelung des 
 # Raspberry Pi im Programm abgebildet. Dazu werden den vom Motor 
-# Treiber bekannten Pins die GPIO Adressen zugewiesen.
-
-# --- START KONFIGURATION GPIO Adressen ---
-
-# Linker Motortreiber
-##L_L_EN = 22 # leftmotor_in1_pin
-##L_R_EN = 23 # leftmotor_in2_pin
-##L_L_PWM = 18 # leftmotorpwm_pin_l
-##L_R_PWM = 17 # leftmotorpwm_pin_r
-
-# Rechter Motortreiber
-##R_L_EN = 13 # rightmotor_in1_pin
-##R_R_EN = 19 # rightmotor_in2_pin
-##R_L_PWM = 12 # rightmotorpwm_pin_l
-##R_R_PWM = 6 # rightmotorpwm_pin_r
-
+# Treiber bekannten Pins die GPIO Adressen des Raspberry Pi oder
+# die des PCA9685 für das PWM Signal zugewiesen.
 
 # --- ENDE KONFIGURATION GPIO Adressen ---
 
@@ -98,55 +82,10 @@ io.setup(rightmotor_in2_pin, io.OUT)
 # So ist sichger gestellt, dass kein HIGH Signal anliegt und der 
 # Motor Treiber nicht unbeabsichtigt aktiviert wird.
 
-# !!!!!  ACHTUNG  !!!!!
-# Für die ersten Tests wurden die Ausgaenge auf True gesetzt.
-# Somit ist der Motortreiber aktiv sobald ein PWM Signal anliegt.
 io.output(leftmotor_in1_pin, True)
 io.output(leftmotor_in2_pin, True)
 io.output(rightmotor_in1_pin, True)
 io.output(rightmotor_in2_pin, True)
-
-# Der Variable leftmotorpwm_pin wird die Varibale ENA zugeorndet.
-# Der Variable rightmotorpwm_pin wird die Varibale ENB zugeorndet.
-##leftmotorpwm_pin_l = L_L_PWM 
-##leftmotorpwm_pin_r = L_R_PWM
-
-##rightmotorpwm_pin_l = R_L_PWM
-##rightmotorpwm_pin_r = R_R_PWM
-
-# Die Beide Variablen leftmotorpwm_pin und rightmotorpwm_pin werden 
-# als Ausgaenge "OUT" definiert. Mit den beiden Variablen wird die
-# Drehgeschwindigkeit der Motoren über ein PWM Signal gesteuert.
-##io.setup(leftmotorpwm_pin_l, io.OUT)
-##io.setup(leftmotorpwm_pin_r, io.OUT)
-
-##io.setup(rightmotorpwm_pin_l, io.OUT)
-##io.setup(rightmotorpwm_pin_r, io.OUT)
-
-# Die Beide Variablen leftmotorpwm_pin und rightmotorpwm_pin werden 
-# zusätzlich zu Ihrer Eigenschaft als Ausgaenge als "PWM" Ausgaenge
-# definiert.
-##leftmotorpwm_f = io.PWM(leftmotorpwm_pin_l,100)
-##leftmotorpwm_b = io.PWM(leftmotorpwm_pin_r,100)
-
-##rightmotorpwm_f = io.PWM(rightmotorpwm_pin_l,100)
-##rightmotorpwm_b = io.PWM(rightmotorpwm_pin_r,100)
-
-# Die linke Motoren steht still, da das PWM Signale mit 
-# ChangeDutyCycle(0) auf 0 gesetzt wurde.
-##leftmotorpwm_f.start(0)
-##leftmotorpwm_b.start(0)
-
-##leftmotorpwm_f.ChangeDutyCycle(0)
-##leftmotorpwm_b.ChangeDutyCycle(0)
-
-# Die rechten Motoren steht still, da das PWM Signale mit 
-# ChangeDutyCycle(0) auf 0 gesetzt wurde.
-##rightmotorpwm_f.start(0)
-##rightmotorpwm_b.start(0)
-
-##rightmotorpwm_f.ChangeDutyCycle(0)
-##rightmotorpwm_b.ChangeDutyCycle(0)
 
 # Die Funktion setMotorMode(motor, mode) legt die Drehrichtung der 
 # Motoren fest. Die Funktion verfügt über zwei Eingabevariablen.
@@ -206,31 +145,25 @@ def setMotorLeft(power):
    int(power)
    if power < 0:
       # Rueckwaertsmodus fuer den linken Motor
-      #setMotorMode("leftmotor", "reverse")
       pwm = -int(duty_cycle * power)
       if pwm > duty_cycle:
          pwm = duty_cycle
-##      leftmotorpwm_f.ChangeDutyCycle(pwm)
-##      leftmotorpwm_b.ChangeDutyCycle(0)	  
       PCA9685_pwm.set_pwm(0, 0, pwm)
       PCA9685_pwm.set_pwm(1, 0, 0)   
    elif power > 0:
       # Vorwaertsmodus fuer den linken Motor
-      #setMotorMode("leftmotor", "forward")
       pwm = int(duty_cycle * power)
       if pwm > duty_cycle:
          pwm = duty_cycle
-##      leftmotorpwm_f.ChangeDutyCycle(0)
-##      leftmotorpwm_b.ChangeDutyCycle(pwm)
       PCA9685_pwm.set_pwm(0, 0, 0)
       PCA9685_pwm.set_pwm(1, 0, pwm)  	  
    else:
       # Stoppmodus fuer den linken Motor
-##      leftmotorpwm_f.ChangeDutyCycle(0)
-##      leftmotorpwm_b.ChangeDutyCycle(0)
       PCA9685_pwm.set_pwm(0, 0, 0)
       PCA9685_pwm.set_pwm(1, 0, 0)  
-	  
+      PCA9685_pwm.set_pwm(2, 0, 0)
+      PCA9685_pwm.set_pwm(3, 0, 0)	
+
 # Die Funktion setMotorRight(power) setzt die Geschwindigkeit der 
 # rechten Motoren. Die Geschwindigkeit wird als Wert zwischen -1 
 # und 1 uebergeben. Bei einem negativen Wert sollen sich die Motoren 
@@ -250,30 +183,24 @@ def setMotorRight(power):
    int(power)
    if power < 0:
       # Rueckwaertsmodus fuer den rechten Motor
-      #setMotorMode("rightmotor", "reverse")
       pwm = -int(duty_cycle * power)
       if pwm > duty_cycle:
          pwm = duty_cycle
-##      rightmotorpwm_f.ChangeDutyCycle(pwm)
-##      rightmotorpwm_b.ChangeDutyCycle(0)
       PCA9685_pwm.set_pwm(2, 0, pwm)
       PCA9685_pwm.set_pwm(3, 0, 0)  	  
    elif power > 0:
       # Vorwaertsmodus fuer den rechten Motor
-      #setMotorMode("rightmotor", "forward")
       pwm = int(duty_cycle * power)
       if pwm > duty_cycle:
          pwm = duty_cycle
-##      rightmotorpwm_f.ChangeDutyCycle(0)
-##      rightmotorpwm_b.ChangeDutyCycle(pwm)
       PCA9685_pwm.set_pwm(2, 0, 0)
       PCA9685_pwm.set_pwm(3, 0, pwm)  	  
    else:
       # Stoppmodus fuer den rechten Motor
-##      rightmotorpwm_f.ChangeDutyCycle(0)
-##      rightmotorpwm_b.ChangeDutyCycle(0)
+      PCA9685_pwm.set_pwm(0, 0, 0)
+      PCA9685_pwm.set_pwm(1, 0, 0)  
       PCA9685_pwm.set_pwm(2, 0, 0)
-      PCA9685_pwm.set_pwm(3, 0, 0)  
+      PCA9685_pwm.set_pwm(3, 0, 0)	
 	  
 # Die Funktion exit() setzt die Ausgaenge die den Motor Treiber 
 # steuern auf False. So befindet sich der Motor Treiber nach dem 
